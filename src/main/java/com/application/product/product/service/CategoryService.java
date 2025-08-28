@@ -7,6 +7,8 @@ import com.application.product.product.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryService {
 
@@ -19,6 +21,19 @@ public class CategoryService {
         return CategoryMapper.categoryDTO(category);
     }
 //    getall
+    public List<CategoryDTO> getAllCategories(){
+       return categoryRepository.findAll().stream().map(CategoryMapper::categoryDTO).toList();
+    }
 //    get
+
+    public CategoryDTO getCategoryById(Long id){
+       Category category= categoryRepository.findById(id).orElseThrow(()->new RuntimeException("Category not found"));
+        return CategoryMapper.categoryDTO(category);
+    }
 //    delete
+
+    public String deleteCategory(Long id){
+        categoryRepository.deleteById(id);
+        return "Successfully deleted";
+    }
 }
