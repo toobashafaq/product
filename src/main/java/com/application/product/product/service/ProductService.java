@@ -9,6 +9,8 @@ import com.application.product.product.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class ProductService {
@@ -19,18 +21,22 @@ public class ProductService {
         /**
          * id,name,descp,price,categoryId
          **/
-
         //check category is available or not
         Category category=categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-
 //        DTO TO ENTITY
-
         Product product=ProductMapper.toProductEntity(productDTO,category);
         product =productRepository.save(product);
         //return entity to dto
         return ProductMapper.toProductDTO(product);
+    }
 
+    public List<ProductDTO> getAllProduct(){
+        return productRepository.findAll().stream().map(ProductMapper::toProductDTO).toList();
+    }
 
+    public ProductDTO getProductById(Long id){
+        Product product=productRepository.findById(id).orElseThrow(()->new RuntimeException("Id not found ")) ;
+        return ProductMapper.toProductDTO(product);
     }
 }
