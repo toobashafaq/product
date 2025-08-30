@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -16,6 +17,12 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 //    create
     public CategoryDTO createCategory(CategoryDTO categoryDTO){
+
+//        check duplicate category
+        Optional<Category> optionalCategory= categoryRepository.findByCategoryNameIgnoreCase(categoryDTO.getCategoryName());
+        if(optionalCategory.isPresent()){
+            throw new RuntimeException("Category already exists");
+        }
         Category category=CategoryMapper.toCategoryEntity(categoryDTO);
         category=categoryRepository.save(category);
         return CategoryMapper.categoryDTO(category);
