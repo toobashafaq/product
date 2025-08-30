@@ -39,4 +39,23 @@ public class ProductService {
         Product product=productRepository.findById(id).orElseThrow(()->new RuntimeException("Id not found ")) ;
         return ProductMapper.toProductDTO(product);
     }
+
+    public ProductDTO updateProduct(Long id,ProductDTO productDTO){
+        Product product=productRepository.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
+        //check category available or not
+        Category category=categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(()-> new RuntimeException("Category not available"));
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setCategory(category);
+        productRepository.save(product);
+        return ProductMapper.toProductDTO(product);
+    }
+
+//    delete product
+    public String deleteProduct(Long id){
+        productRepository.deleteById(id);
+        return "Product Deleted successfully";
+    }
+
 }

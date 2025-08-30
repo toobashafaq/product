@@ -18,14 +18,14 @@ public class ProductController {
     private ProductService productService;
 
 //    get all
-    @PostMapping
+    @GetMapping
     public List<ProductDTO> getAllProduct(){
         return productService.getAllProduct();
     }
 
 
 //    get by id
-    @PostMapping("{/id}")
+    @PostMapping("/{id}")
     public ProductDTO getById(@PathVariable Long id){
         return productService.getProductById(id);
     }
@@ -36,8 +36,14 @@ public class ProductController {
         return new ResponseEntity<>(productService.createProduct(productDTO), HttpStatusCode.valueOf(201));
     }
 
-    public ProductDTO updateProduct(@RequestBody ProductDTO productDTO){
+    @PutMapping("/{id}")
+    public ProductDTO updateProduct(@RequestBody ProductDTO productDTO,@PathVariable Long id){
+        return productService.updateProduct(id,productDTO);
+    }
 
+    @DeleteMapping("/{id}")
+    public String deleteProduct(@PathVariable Long id){
+        return productService.deleteProduct(id);
     }
 
 }
