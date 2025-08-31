@@ -3,6 +3,7 @@ package com.application.product.product.service;
 import com.application.product.product.dto.ProductDTO;
 import com.application.product.product.entity.Category;
 import com.application.product.product.entity.Product;
+import com.application.product.product.exception.CategoryNotFoundException;
 import com.application.product.product.mapper.ProductMapper;
 import com.application.product.product.repository.CategoryRepository;
 import com.application.product.product.repository.ProductRepository;
@@ -23,7 +24,7 @@ public class ProductService {
          **/
         //check category is available or not
         Category category=categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 //        DTO TO ENTITY
         Product product=ProductMapper.toProductEntity(productDTO,category);
         product =productRepository.save(product);
@@ -43,7 +44,7 @@ public class ProductService {
     public ProductDTO updateProduct(Long id,ProductDTO productDTO){
         Product product=productRepository.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
         //check category available or not
-        Category category=categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(()-> new RuntimeException("Category not available"));
+        Category category=categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(()-> new CategoryNotFoundException("Category not Found!"));
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());

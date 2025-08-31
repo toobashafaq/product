@@ -2,6 +2,7 @@ package com.application.product.product.service;
 
 import com.application.product.product.dto.CategoryDTO;
 import com.application.product.product.entity.Category;
+import com.application.product.product.exception.CategoryAlreadyExistsException;
 import com.application.product.product.mapper.CategoryMapper;
 import com.application.product.product.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CategoryService {
 //        check duplicate category
         Optional<Category> optionalCategory= categoryRepository.findByCategoryNameIgnoreCase(categoryDTO.getCategoryName());
         if(optionalCategory.isPresent()){
-            throw new RuntimeException("Category already exists");
+            throw new CategoryAlreadyExistsException("Category "+ categoryDTO.getCategoryName()+" already exists");
         }
         Category category=CategoryMapper.toCategoryEntity(categoryDTO);
         category=categoryRepository.save(category);
