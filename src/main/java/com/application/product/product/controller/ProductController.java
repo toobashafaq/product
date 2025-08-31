@@ -2,6 +2,7 @@ package com.application.product.product.controller;
 
 import com.application.product.product.dto.ProductDTO;
 import com.application.product.product.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(
+        name = "Product REST API"
+        ,description = "CRUD APIs"
+)
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
