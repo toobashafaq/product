@@ -46,7 +46,7 @@ public class SecurityConfig {
         UserDetails seller=User.builder()
                 .password(passwordEncoder().encode("seller"))
                 .username("seller")
-                .roles("Seller")
+                .roles("SELLER")
                 .build();
 
         return new InMemoryUserDetailsManager(userDetails,seller);
