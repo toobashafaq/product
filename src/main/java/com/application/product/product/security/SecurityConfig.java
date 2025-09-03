@@ -1,8 +1,11 @@
 package com.application.product.product.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,35 +23,61 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+
+////Basic authentication
+//      @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+//        http.csrf(csrf->csrf.disable()).
+//                authorizeHttpRequests(request-> {
+//                    request.requestMatchers(HttpMethod.GET, "/api/**").permitAll();
+//                    request.anyRequest().authenticated();
+//                }).httpBasic(Customizer.withDefaults());
+//
+//        return http.build();
+//    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        UserDetails userDetails= User.builder()
+//                .password(passwordEncoder().encode("admin"))
+//                .username("admin")
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails seller=User.builder()
+//                .password(passwordEncoder().encode("seller"))
+//                .username("seller")
+//                .roles("SELLER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(userDetails,seller);
+//    }
+
+
+//JWT Authentication
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf->csrf.disable()).
                 authorizeHttpRequests(request-> {
                     request.requestMatchers(HttpMethod.GET, "/api/**").permitAll();
                     request.anyRequest().authenticated();
-                }).httpBasic(Customizer.withDefaults());
+                }).authenticationProvider(authenticationProvider())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
-//Basic authentication
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails userDetails= User.builder()
-                .password(passwordEncoder().encode("admin"))
-                .username("admin")
-                .roles("ADMIN")
-                .build();
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider provider=new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
 
-        UserDetails seller=User.builder()
-                .password(passwordEncoder().encode("seller"))
-                .username("seller")
-                .roles("SELLER")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails,seller);
     }
 }
