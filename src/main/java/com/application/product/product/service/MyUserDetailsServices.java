@@ -2,6 +2,7 @@ package com.application.product.product.service;
 
 import com.application.product.product.entity.User;
 import com.application.product.product.repository.UserRepository;
+import com.application.product.product.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +24,6 @@ public class MyUserDetailsServices implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user=userRepository.findByUsername(username);
         if(user.isEmpty()) throw new UsernameNotFoundException("User Not Found ");
-        return user.;
+        return new UserPrincipal(user.get());
     }
 }
