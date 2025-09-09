@@ -2,6 +2,7 @@ package com.application.product.product.controller;
 
 import com.application.product.product.dto.UserDTO;
 import com.application.product.product.entity.User;
+import com.application.product.product.security.JwtUtil;
 import com.application.product.product.service.MyUserDetailsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtUtil;
     @PostMapping("/register")
     public User register(@RequestBody User user){
         return myUserDetailsServices.createUser(user);
@@ -35,7 +39,8 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody UserDTO user){
-        Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+        Authentication authentication= authenticationManager.
+                authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
        List<String> roles= authentication
@@ -45,8 +50,8 @@ public class UserController {
                .toList();
 
        UserDetails userDetails= myUserDetailsServices.loadUserByUsername(user.getUsername());
-       String token=
-        return "Login successful !";
+       String token= jwtUtil.generateToken(userDetails.getUsername(),roles);
+        return token;
     }
 
 }
